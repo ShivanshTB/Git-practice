@@ -59,5 +59,6 @@ export class CampaignsModule {
 			.directive('addNewCampaignComponent', downgradeComponent({ component: AddNewCampaignComponent }))
 			.directive('campaignDetailsComponent', downgradeComponent({ component: CampaignDetailsComponent }))
 			.directive('copyCampaignComponent', downgradeComponent({component: CopyCampaignComponent}));
+			.directive('copyCampaignComponent', downgradeComponent({component: CopyyyCampaignComponent}));
 	}
 }
