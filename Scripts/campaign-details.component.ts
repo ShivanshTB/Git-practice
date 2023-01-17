@@ -8,15 +8,19 @@ import { HttpClient } from '@angular/common/http';
 import { CommonCandidateService } from '@appcore/services/common-candidate.service';
 import { catchError } from 'rxjs/operators';
 import { forkJoin, of, Subscription } from 'rxjs';
-import { LoggedInUser } from '@appcore/authentication/LoggedInUser';
-import { AuthenticationService } from '@appcore/authentication';
-import { AddNewCampaignComponent } from '../add-new-campaign/add-new-campaign.component';
+
 import { BsModalService } from 'ngx-bootstrap';
 import { AccountService } from '@appcore/services/account.service';
 import { campaignCandidateConfig, campaignDetailConfig, CampaignSearchOptions, candidateConfig, columnConfig, currentObjectConfig } from '@appcore/model/CampaignModels/campaignDto';
 import { DatelocalPipe } from '../../shared/pipe/datelocal.pipe';
 import { faBan } from '@fortawesome/pro-light-svg-icons';
 import { faEnvelope } from '@fortawesome/pro-regular-svg-icons';
+import { SharedModule } from '../shared/shared.module';
+import { CampaignsListComponent } from './campaigns-list/campaigns-list.component';
+import { AddNewCampaignComponent } from './add-new-campaign/add-new-campaign.component';
+import { CampaignDetailsComponent } from './campaign-details/campaign-details.component';
+import { CopyCampaignComponent } from './copy-campaign/copy-campaign.component';
+
 @Component({
 	selector: 'app-campaign-details',
 	templateUrl: './campaign-details.component.html',
