@@ -1,0 +1,165 @@
+<div id="add-edit-campaign">
+	<div class="modal-header">
+		<span class="modal-title">
+			<span>{{isEdit ? 'Edit': isForCopy && !showSecondStep ? 'Copy': 'Add' }} Campaign</span>
+		</span>
+	
+		<button type="button" class="close" id="hide-modal-top" (click)="activeModal.hide();">
+			<span>&times;</span>
+		</button>
+	</div>
+
+	<div class="modal-body">
+		<aw-wizard #addEditCopyCampaign [disableNavigationBar]="true">
+			<!-- wizard 1  --> 
+			<aw-wizard-step id="firstStep"  *ngIf="isForCopy" [canExit]="copyCampaignForm.valid">
+				<div id="copy-campaign">				
+						<form class="highlight-invalid" [formGroup]="copyCampaignForm" #copyCampaignNgForm="ngForm" novalidate>
+							<div class="jumbotron p-4">
+								<h1 class="text-break">{{campaign?.CampaignTitle}}</h1>
+								<p class="lead text-break">{{campaign?.CampaignDescription}}</p>
+								<hr class="my-4">
+								<p class="font-14">Select options to copy - </p>
+								<div class="row ml-2 custom-control custom-checkbox">
+									<input type="checkbox" id="copy-SMS-template" class="custom-control-input" formControlName="smsTemplate">
+									<label class="custom-control-label" for="copy-SMS-template">Copy SMS Template</label>	
+								</div>
+								<div class="row ml-2 custom-control custom-checkbox">
+									<input type="checkbox" id="copy-Email-template" class="custom-control-input" formControlName="emailTemplate">
+									<label class="custom-control-label" for="copy-Email-template">Copy Email Template</label>	
+								</div>
+								<div class="row ml-2 custom-control custom-checkbox" *ngIf="this.campaign?.CreatedBy==this.loggedInUser.userId">
+									<input type="checkbox" id="copy-candidates" class="custom-control-input" formControlName="candidates">
+									<label class="custom-control-label" for="copy-candidates">Copy Candidates</label>	
+								</div>
+							</div>
+							<div class="d-flex align-items-center justify-content-center">
+								<div class="disabled-btn-tooltip" [tooltip]="getTooltIipMessageForNextBtn()" placement="top" triggers="pointerenter:pointerout">
+									<button type="button" id="copyCampaignBtn" class="btn shadow-sm btn-primary" [disabled]="!(this.copyCampaignForm.value.smsTemplate || this.copyCampaignForm.value.emailTemplate || this.copyCampaignForm.value.candidates)" awNextStep (click)="copyCampaign()">Next</button>
+								</div>
+								<div class="ml-2">
+									<button type="button" id="cancelCopyCampaignBtn" class="btn shadow-sm btn-outline-secondary" (click)="activeModal.hide();">Cancel</button>
+								</div>
+							</div>
+						</form>
+				</div>
+			</aw-wizard-step>
+
+					<!-- wizard 2 -->
+				<aw-wizard-step id="secondStep">
+					<ng-container  *ngIf="showSecondStep">
+						<form class="highlight-invalid" [formGroup]="basicDetailsForm" #basicDetailsNgForm="ngForm" [ngClass]="{'ng-submitted': basicDetailsNgForm.submitted}" (ngSubmit)="basicDetailsForm.status=='VALID' && addEditCampaign()" novalidate>
+					<div>
+						<div class="mb-4">
+							<h3 class="headline mb-2">
+								<span>Basic Details</span>
+							</h3>
+		
+							<div class="col-sm-12 form-group">
+								<label class="control-label">Campaign Title </label>
+								<input class="form-control" id="Title" formControlName="Title" maxlength="100">
+							</div>
+						
+							<div class="col-sm-12 form-group">
+								<label class="control-label">Campaign Description</label>
+								<textarea class="form-control" rows="3" id="Description" formControlName="Description" maxlength="1000"></textarea>
+							</div>
+			
+						</div>
+		
+						
+						<div class="mb-4">
+							<h3 class="headline mb-2">
+								<span>Template Configuration</span>
+							</h3>
+							<div class="form-group row col-12">
+								<div class="col-sm-3 custom-control custom-checkbox">
+									<input type="checkbox" id="toggle-IsSMSEnabled" class="custom-control-input" formControlName="EnableSMSCampaign">
+									<label class="custom-control-label" for="toggle-IsSMSEnabled">Enable SMS Campaign</label>	
+								</div>
+								<div class="col-sm-3 custom-control custom-checkbox">
+									<input type="checkbox" id="toggle-IsEmailEnabled" class="custom-control-input" formControlName="EnableEmailCampaign">
+									<label class="custom-control-label" for="toggle-IsEmailEnabled">Enable Email Campaign</label>	
+								</div>
+							</div>
+			
+							<tabset>
+		
+								<tab [disabled]="!basicDetailsForm.value.EnableSMSCampaign">
+									<ng-template tabHeading >
+										<span class="text-muted">SMS</span>
+									</ng-template>
+		
+									<div [hidden]="!basicDetailsForm.value.EnableSMSCampaign" class="template-tab-border">
+										<div class="form-group">
+											<div class="d-flex align-items-end justify-content-between mt-2 mb-1">
+												<label>Template</label>
+												<app-common-legend-menu [legends]="smsLegends" (onLegendSelected)="insertSMSLegend('#sms-body', $event.legend.LegendValue)"></app-common-legend-menu>
+											</div>
+											<textarea #smsBody rows="4" id="sms-body" class="form-control" formControlName="SMSBody" name="smsBody"></textarea>
+										</div>
+									</div>
+								</tab>
+		
+								<tab [disabled]="!basicDetailsForm.value.EnableEmailCampaign" >	
+									<ng-template tabHeading> 
+										<span class="text-muted">Email</span>
+									</ng-template>
+			
+									<div [hidden]="!basicDetailsForm.value.EnableEmailCampaign" class="mb-3 template-configuration-layout" [ngClass]="!basicDetailsForm.value.EnableEmailCampaign? 'disabled': '' " >
+										<div class="form-group">
+											<div class="d-flex align-items-end justify-content-between mt-2 mb-1">
+												<label>Subject *</label>
+												<app-common-legend-menu [legends]="emailLegends" (onLegendSelected)="insertEmailSubjectLegend('#email-subject', $event.legend.LegendValue)"></app-common-legend-menu>
+											</div>
+											<input #subject id="email-subject" class="form-control" formControlName="Subject">
+										</div>
+							
+										<div class="form-group">
+											<div class="d-flex align-items-end justify-content-between mt-2 mb-1">
+												<label>Body *</label>
+												<app-common-legend-menu [legends]="emailLegends" (onLegendSelected)="insertLegendSummernote('#email-body', $event.legend.LegendValue)"></app-common-legend-menu>
+											</div>
+											<div id="email-body" [ngxSummernote]="summerNoteConfig" formControlName="EmailBody"></div>
+										</div>
+						
+										<div class="form-group" *ngIf="singleMailBoxAccount">
+											<div class="d-flex align-items-end justify-content-between mt-2 mb-1">
+												<label>Signature *</label>
+												<app-common-legend-menu [legends]="emailLegends" (onLegendSelected)="insertLegendSummernote('#email-signature', $event.legend.LegendValue)"></app-common-legend-menu>
+											</div>
+											<div id="email-signature" [ngxSummernote]="summerNoteConfig" formControlName="Signature"></div>
+										</div>
+									</div>
+			
+								</tab>
+							</tabset>
+		
+						</div>
+		
+					
+						<div class="mb-3">
+							<h3 class="headline mb-2">
+								<span>Add Candidates</span>
+							</h3>
+					
+							<app-selected-candidates [AccountId]="AccountId" [type]="'local'" (addCandidates)="addCandidates($event)" [candidatesInTheCampaign]="candidatesInTheCampaign" [isEdit]="isEdit" [isForCopy]="isForCopy"></app-selected-candidates>
+						</div>
+						<div class="my-3 text-center d-flex align-items-center justify-content-center " [ngClass]="{'pt-4': !saveBtnDisabled}">
+							<div [tooltip]="getTooltipMessageForSaveBtn()" placement="top" triggers="pointerenter:pointerout" class="disabled-btn-tooltip">
+								<button type="submit" id="saveNewCampaignBtn" class="btn shadow-sm btn-primary mr-2" [disabled]="(!this.basicDetailsForm.value.EnableEmailCampaign && !this.basicDetailsForm.value.EnableSMSCampaign) || this.saveBtnDisabled">Save</button>
+						</div>
+						<div>
+							<button type="button" id="cancelNewCampaignBtn" class="btn shadow-sm btn-outline-secondary" (click)="cancelCreatingNewCampaign()">Cancel</button>
+						</div>
+						</div>
+		
+					</div>
+						</form>
+					</ng-container>
+				</aw-wizard-step>
+		</aw-wizard>
+		
+	</div>
+
+</div>

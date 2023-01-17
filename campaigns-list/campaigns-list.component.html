@@ -1,0 +1,194 @@
+<div class="d-flex flex-column h-100" id="campaigns-list">
+	<!-- PAGE HEADING -->
+	<form class="highlight-invalid" novalidate>
+		<div class="page-heading row align-items-center flex-shrink-0">
+			
+			<div class="col-auto">
+				<h2>Campaigns</h2>
+			</div>
+
+			<div class="col pl-1">
+
+				<form [formGroup]="campaignsListForm" #ngForm="ngForm" novalidate>
+					<div class="row justify-content-left">
+						
+						<!-- ACCOUNT FILTER -->
+						<div class="col-md-3 input-group input-group-sm">
+							<div class="input-group-prepend">
+								<span class="input-group-text">
+									<fa-icon [icon]="fa.faCube" [fixedWidth]="true" container="body" tooltip="Account" [adaptivePosition]="false"></fa-icon>
+								</span>
+							</div>
+
+							<ng-select
+							 id="account-filter"
+								[items]="plannerAccountList"
+								[clearable]="false"
+								placeholder="Select Account"
+								bindLabel="AccountName"
+								bindValue="AccountId"
+								[loading]="!accountList?.length"
+								formControlName="AccountId"
+								name="account"
+								(change)="onAccountChange()">
+
+								<ng-template ng-notfound-tmp>
+									<div class="ng-option disabled">No Accounts Available</div>
+								</ng-template>
+							</ng-select>
+						</div>
+
+							<!-- SEARCH BOX -->
+						<div class="col-md-3" *ngIf="displaySearchBar">
+							<div class="input-group input-group-sm">
+								<div class="input-group-prepend">
+									<span class="input-group-text">
+										<fa-icon [icon]="fa.faSearch"></fa-icon>
+									</span>
+								</div>
+								<input type="text" id="jo-title-filter" class="form-control" placeholder="Search By Campaign Title" formControlName="SearchText">
+							</div>
+						</div>
+
+						<div class="col-md-3"></div>
+
+						<!-- SORT BOX -->
+						<div class="col-md-3" *ngIf="displaySortOptions">
+							<div class="input-group input-group-sm">
+								<div class="input-group-prepend"><span class="input-group-text"><fa-icon tooltip="Sort By Created On or Updated On" [icon]="fa.faSort"></fa-icon></span></div>
+								<ng-select
+								 id="sorting-filter"
+								  [items]="sortValues"
+									bindLabel="Value"
+									bindValue="Key"
+									[clearable]="false"
+								  placeholder="Sort By Created On or Updated On"
+								  formControlName="OrderBy"
+									(change)="changeSortOrder()">
+								</ng-select>
+
+								<div class="input-group-append">
+									<div class="btn-group" btnRadioGroup formControlName="SortOrder">
+										<label class="btn btn-outline-success btn-xs pt-1" id="asc-sort" (click)="changeSortOrder()" [btnRadio]="'ASC'" tooltip="Ascending"><fa-icon [icon]="fa.faArrowUp"></fa-icon></label>
+										<label class="btn btn-outline-success btn-xs pt-1" id="desc-sort" (click)="changeSortOrder()" [btnRadio]="'DESC'" tooltip="Descending"><fa-icon [icon]="fa.faArrowDown"></fa-icon></label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<div class="col-auto pr-3">
+				<!-- restrictAction="" -->
+				<button type="button" id="add-campaign" class="btn btn-sm btn-primary" [disabled]="!this.campaignsListForm.value.AccountId"  (click)="createNewCampaign()"><fa-icon [icon]="fa.faPlus"></fa-icon>&nbsp;&nbsp;Add Campaign</button>
+			</div>
+		</div>			
+	</form>
+
+		<h3 class="text-muted text-center no-slot-msg mt-4" *ngIf="accountList?.length==1 && plannerAccountList?.length==0">
+			<span >Campaign Functionality is not configured for your account. Please contact administrator.</span>
+		</h3>
+		<h3 class="text-muted text-center no-slot-msg mt-4" *ngIf="accountList?.length>1 && plannerAccountList?.length==0">
+			<span>Campaign Functionality is not configured for any of the associated accounts.</span>
+		</h3>
+		<h3 class="text-muted text-center no-slot-msg mt-4" *ngIf="plannerAccountList?.length>0 && campaignsList?.length==0">
+			<span >No Campaigns found.</span>
+		</h3>
+
+		<div id="campaign-list" class="flex-grow-1 overflow-list border-0 px-3 bg-white" [hidden]="!campaignsList?.length">
+			<div class="candidateCard p-2" *ngFor="let campaign of campaignsList; let index=index; let showReadMore = false" >
+				<div class="row">
+					<div class="col d-flex align-items-center">
+
+						<span class="btn-group" dropdown>
+							<button id="button-animated" dropdownToggle class="dropdown-toggle text-like-btn"
+								aria-controls="dropdown-animated">
+									<fa-icon class="mr-1 ml-1" size="lg" [icon]="fa.faEllipsisV" tooltip="Actions" container="body" [adaptivePosition]="false"></fa-icon>
+							</button>
+			
+							<div id="dropdown-animated" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-animated">
+								<div >
+									<button role="menuitem" class="dropdown-item" id="edit-campaign{{index}}" (click)="editCampaign(campaign)" [disabled]="disableEditCampaign(campaign)">
+										<span tooltip="{{campaign.IsTriggered?'Campaign has already been triggered':this.loggedInUser.userId!=campaign.CreatedBy?'You are not the owner of the campaign':''}}"
+										container="body" [adaptivePosition]="false" placement="top" triggers="pointerenter:pointerout" class="disabled-btn-tooltip">
+											<fa-icon [icon]="fa.faPencilAlt"></fa-icon>
+											<span class="ml-2 cursor-pointer">Edit Campaign</span>
+										</span>
+									</button>	
+								</div>
+								<button  role="menuitem" class="dropdown-item" id="copy-campaign{{index}}" (click)="copyCampaign(campaign)">
+									<fa-icon [icon]="fa.faClipboard"></fa-icon>
+									<span class="ml-2 cursor-pointer">Copy Campaign</span>
+								</button>
+							</div>
+						</span>
+
+						<span class=" ml-1 h4 font-16">
+							<a href="{{'#/campaignDetails/'+campaign.CampaignId}}" id="campaign-details">
+								<span tooltip="Campaign Title" container="body" [adaptivePosition]="false">{{campaign.CampaignTitle}}</span>
+							</a>
+						</span>
+					</div>
+
+				</div>
+
+					<div class="row font-13">
+						<div class="col-auto">
+							<div class="pr-4 mb-0 border-right-ddd"><strong class="text-muted"> Status :  </strong> <span class="badge" [ngClass]="campaign.IsTriggered? 'badge-secondary' :'badge-success' ">{{campaign.IsTriggered ? 'Triggered': 'Active'}}</span> </div>
+						</div>
+			
+						<div class="col-auto">
+							<span class="pr-4 mb-0 border-right-ddd"><strong class="text-muted"> Candidates :  </strong>{{campaign.CandidatesCount}}</span>
+						</div>
+			
+						<div class="col-auto">
+							<span class="pr-4 mb-0 border-right-ddd"><strong class="text-muted"> Created On :  </strong>{{campaign.CreatedOn | datelocal:'dd MMM yyyy hh:mm a' }}</span>
+						</div>
+			
+						<div class="col-auto">
+							<span class="pr-4 mb-0" [ngClass]="{'border-right-ddd': campaign.UpdatedOn}"><strong class="text-muted"> Created By :  </strong>{{campaign.CreatedByName}}</span>
+						</div>
+			
+						<div class="col-auto" *ngIf="campaign.UpdatedOn">
+							<span class="pr-4 mb-0"><strong class="text-muted"> Modified on :  </strong>{{campaign.UpdatedOn | datelocal:'dd MMM yyyy hh:mm a' }}</span>
+						</div>
+
+					</div>
+
+					<div class="row">
+						<div class="col-12">
+							<strong class="text-muted"> Description : </strong>
+							<span *ngIf="campaign.CampaignDescription.length <= 230 || campaign.CampaignDescription.length > 230 && showReadMore">
+									{{campaign.CampaignDescription}}&nbsp;
+							</span>
+
+							<span *ngIf="campaign.CampaignDescription.length > 230 && showReadMore">
+								<a href="javascript:void(0);" (click)="showReadMore = !showReadMore" >Read less</a>
+							</span>
+			
+							<span *ngIf="campaign.CampaignDescription.length > 230 && !showReadMore">
+								{{campaign.CampaignDescription.substring(0,231)}}...
+								<a href="javascript:void(0);" (click)="showReadMore = !showReadMore" >Read more</a>
+							</span>
+						</div>
+					</div>
+			</div>
+		</div>
+
+	<!-- Pagination -->
+	<div id="pagination" class="p-2 text-right border-top flex-shrink-0" *ngIf="totalCampaigns > 0">
+		<div class="row align-items-center">
+			<div class="col-auto ml-2">
+				<span>{{totalCampaigns}} Campaign{{totalCampaigns==1?'':'s'}}</span>
+			</div>
+
+			<div class="col">
+				<pagination class="pagination-sm m-0" id="pagination-campaign" [totalItems]="totalCampaigns" 
+				[itemsPerPage]="campaignSearchOptions.NoOfRecordsPerPage" [maxSize]="5" (pageChanged)="pageChanged($event.page)"
+				 previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;" [boundaryLinks]="true"></pagination>
+			</div>
+		</div>
+	</div>
+
+</div>

@@ -1,0 +1,140 @@
+<div *ngIf="isNotFound" class="notfound d-flex justify-content-center mt-5">
+	<app-not-found404 [ErrorFor]="ErrorFor"></app-not-found404>
+</div>
+
+<div *ngIf="!isNotFound && campaign" class="d-flex flex-column h-100" id="campaign_detail">
+	<div class="page-heading row align-items-center flex-shrink-0">
+		<div class="col-auto">
+			<button type="button" class="btn btn-sm btn-outline-secondary rounded-circle" id="go-back" (click)="goBack()" [hidden]="goBackHidden" container="body" [adaptivePosition]="false" tooltip="Go back" placement="bottom">
+        <fa-icon [icon]="fas.faArrowLeft"></fa-icon>
+      </button>
+		</div>
+			<div class="col">
+				<h2><span tooltip="Campaign Title" placement="bottom">{{campaign?.CampaignTitle}}</span></h2>
+			
+				<div class="my-1">
+					<span><span class="font-weight-bold text-muted">Account Name: </span>{{campaign?.AccountName}}</span>
+					<span class="pipe-separator"></span>
+					<span><span class="font-weight-bold text-muted"> Total Candidates: </span>{{campaign?.CandidatesCount}}</span>
+					<span class="pipe-separator"></span>
+					<span><span class="font-weight-bold text-muted">Created by: </span>{{campaign?.CreatedByName}}</span>
+					<span class="pipe-separator"></span>
+					<span><span class="font-weight-bold text-muted">Created On: </span>{{campaign?.CreatedOn | datelocal:'dd MMM yyyy hh:mm a'}}</span>
+					<span class="pipe-separator"></span>
+					<span *ngIf="campaign?.UpdatedOn"><span class="font-weight-bold text-muted"> Modified on :  </span>{{campaign?.UpdatedOn | datelocal:'dd MMM yyyy hh:mm a' }}</span>
+				</div>
+		</div>
+
+		<div class="col-auto" id="editCampaign" [hidden]="showHideEditCampaignButton()" (click)="editCampaign()">
+			<button type="button" id="edit-campaign" class="btn btn-primary" >
+				<fa-icon [icon]="fas.faPencil"></fa-icon>&nbsp; Edit Campaign</button>
+		</div>
+	</div>
+
+	<!-- statistics -->
+	<div class="p-3 m-3" *ngIf="campaign?.IsTriggered">
+		<div class="d-flex justify-content-around statistics">
+			<button type="button" class="btn btn-primaryBlue  " [ngClass]="searchOptions.FilterBy =='EmailSent'?'highlightPrimaryBlue':'shadow-lg'" (click)="filterBy('EmailSent')">
+				Emails Sent &nbsp;<span class="badge badge-light">{{EmailsSent}}</span>&nbsp;
+			</button>&nbsp;&nbsp;
+			<button type="button" class="btn btn-secondary  " [ngClass]="searchOptions.FilterBy =='EmailOpened'?'hightlightSecondary':'shadow-lg'" (click)="filterBy('EmailOpened')">
+				Emails Opened &nbsp;<span class="badge badge-light">{{EmailOpened}}</span>&nbsp;
+			</button>&nbsp;&nbsp;
+			<button type="button" class="btn btn-danger  " [ngClass]="searchOptions.FilterBy =='BouncedEmail'?'highlightDanger':'shadow-lg'" (click)="filterBy('BouncedEmail')">
+				Emails Bounced &nbsp;<span class="badge badge-light">{{EmailsBounced}}</span>&nbsp;
+			</button>&nbsp;&nbsp;
+			<button type="button" class="btn btn-dark  " [ngClass]="searchOptions.FilterBy =='SMSSent'?'highlightDark':'shadow-lg'" (click)="filterBy('SMSSent')">
+				SMS Sent &nbsp;<span class="badge badge-light p-1">{{SMSSent}}</span>&nbsp;
+			</button>&nbsp;&nbsp;
+			<button type="button" class="btn btn-info  " [ngClass]="searchOptions.FilterBy =='SMSDelievered'?'highlightInfo':'shadow-lg'" (click)="filterBy('SMSDelievered')">
+				SMS Delivered &nbsp;<span class="badge badge-light">{{SMSDelievered}}</span>&nbsp;
+			</button>&nbsp;&nbsp;
+			<button type="button" class="btn btn-warning  " [ngClass]="searchOptions.FilterBy =='SMSUndelivered'?'highlightWarning':'shadow-lg'" (click)="filterBy('SMSUndelivered')">
+				SMS Undelivered &nbsp;<span class="badge badge-light">{{SMSUndelivered}}</span>&nbsp;
+			</button>&nbsp;&nbsp;
+			<button type="button" class="btn btn-success  " [ngClass]="searchOptions.FilterBy =='SMSResponded'?'highlightSuccess':'shadow-lg'" (click)="filterBy('SMSResponded')">
+				SMS Responded &nbsp;<span class="badge badge-light">{{SMSResponded}}</span>&nbsp;
+			</button>
+		</div>
+	</div>
+
+	<!-- Description -->
+	<div class="overflow-list border-0">
+		<div class="p-2 m-2">
+			<h3 class="headline"><fa-icon class="mr-1 fas cursor-pointer" [icon]="isDescriptionExpanded ? fas.faChevronRight : fas.faChevronDown" (click)="isDescriptionExpanded = !isDescriptionExpanded" [attr.aria-expanded]="!isDescriptionExpanded" aria-controls="collapseBasic"></fa-icon>Description</h3>
+			<div  [collapse]="isDescriptionExpanded" [isAnimated]="true">
+				<div class="m-4 modal-body bg-white">
+					{{campaign?.CampaignDescription}}
+				</div>
+		</div>
+		</div>
+	
+		<!-- Email template -->
+		<div id="template-preview">
+			<div class="p-2 m-2" >
+				<h3 class="headline"><fa-icon class="mr-1 fas cursor-pointer" [icon]="isEmailExpanded ? fas.faChevronRight : fas.faChevronDown" (click)="isEmailExpanded = !isEmailExpanded" [attr.aria-expanded]="!isEmailExpanded" aria-controls="collapseBasic"></fa-icon>Email Template</h3>
+				<div [collapse]="isEmailExpanded" [isAnimated]="true">
+					<div class=" m-4 modal-body bg-white pointer-events-none" *ngIf="previewTemplates?.EmailBody != null">
+						<span class="font-weight-bold email-subject">{{previewTemplates?.EmailSubject}}</span>
+						<div class="preview-template" [innerHtml]="previewTemplates?.EmailBody"></div>
+					</div>
+						<div class="m-4 text-muted" *ngIf="previewTemplates?.EmailBody == null">
+							<span class="ml-2" [innerText]="previewTemplates?.EmailPreviewWarning"></span>
+						</div>
+				</div>
+			</div>
+
+			<!-- sms template -->
+			<div class="p-2 m-2">
+				<h3 class="headline"><fa-icon class="mr-1 fas cursor-pointer" [icon]="isSmsExpanded ? fas.faChevronRight : fas.faChevronDown" (click)="isSmsExpanded = !isSmsExpanded"></fa-icon>SMS Template</h3>
+				<div [collapse]="isSmsExpanded" [isAnimated]="true">
+					<div class="m-4 modal-body bg-white pointer-events-none" *ngIf="previewTemplates?.SMSBody != null" >
+						<div class="smsPreview">{{previewTemplates?.SMSBody}}</div>
+					</div>
+					<div class="m-4 text-muted" *ngIf="previewTemplates?.SMSBody == null">
+						<span class="ml-2" [innerText]="previewTemplates?.SMSPreviewWarning"></span>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- candidates List table -->
+		<div class="p-2 m-2">
+			<h3 class="headline">Candidate List  </h3> 
+			<div class="p-2 m-3" id="candidateTable" [ngClass]="{'w-50': !campaign?.IsTriggered}">
+				<div *ngIf="candidatesList">
+
+					<app-custom-datatable id="app-custom-datatable" class="table-sm w-100" [count]="count" [columns]="CandidateListColumns" [dataSet]="candidatesList" 
+					[currentObject]="currentObject" (valueChange)="valueChange($event)" [isServerSide]="true" [isCampaign]="true" >
+						<ng-template #tableBodyTemplate let-col="col" let-row="row">
+							<div *ngIf="col.title == 'Name'" class="mr-5">
+								<a href="{{'#/candidate/'+row?.CandidateApplicationId}}">{{row.FirstName}} {{row.LastName}}</a> 
+									<span tooltip="Unsubscribed from Emails/SMS"  placement="top" *ngIf="row?.UnsubscribeCandidateEngagement">
+										<fa-stack class="text-danger custom-stack-size" >
+											<fa-icon [icon]="fas.faBan" class="font-4" stackItemSize="2x"></fa-icon>
+											<fa-icon [icon]="fas.faEnvelope" class="font-8" stackItemSize="1x"></fa-icon>
+										</fa-stack>	
+									</span>
+							</div>
+							<div *ngIf="col.title === 'SMS Status'">
+								<span>{{row.SMSStatus}}
+									<span *ngIf="campaign?.IsTriggered && row.SMSStatus =='Responded'">
+										<button type="button" class="btn btn-link p-0" (click)="openChatPanel(row)">View response</button>
+									</span>
+								</span>
+							</div>
+						</ng-template>
+					</app-custom-datatable>
+
+				</div>
+			</div>
+		</div>
+	
+		<div class="p-2 m-2 text-center" id="sendCampaign" [hidden]="showHideSendCampaignButton()">
+			<button type="button" id="send-campaign-btn" class="btn btn-primary"  (click)="sendCampaign()">
+				<fa-icon [icon]="fas.faPaperPlane"></fa-icon>&nbsp; Send Campaign</button>
+		 </div>
+	
+	</div>
+</div>
+

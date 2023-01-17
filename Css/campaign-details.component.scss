@@ -1,0 +1,150 @@
+#template-preview{
+	max-height: none;
+}
+.smsPreview{
+	width: auto !important;
+}
+
+.btn-primaryBlue{
+	color: #fff;
+	background-color: #007bff !important;
+  border-color: #007bff !important;
+}
+
+.btn-secondary{
+	color: #fff;
+	background-color: #6c757d !important;
+	border-color: #6c757d !important;
+}
+
+.btn-success{
+	color: #fff;
+	background-color: #28a745 !important;
+  border-color: #28a745 !important;
+}
+
+.btn-danger{
+	color: #fff !important;
+	background-color: #dc3545 !important;
+	border-color: #dc3545 !important;
+}
+
+.btn-warning{
+	color: #fff !important;
+	background-color: #ff8c00 !important;
+  border-color: #ff8c00 !important;
+}
+
+.btn-info{
+	color: #fff !important;
+	background-color: #17a2b8 !important;
+  border-color: #17a2b8 !important;
+}
+
+.btn-dark{
+	color: #fff !important;
+	background-color: #343a40 !important;
+	border-color: #343a40 !important;
+}
+	.statistics .btn{
+		width: 12%;
+	}
+
+.btn-primaryBlue:hover,.btn-primaryBlue:active{
+	background-color: #1066c3 !important;
+	border-color: #1066c3 !important;
+}
+.highlightPrimaryBlue{
+	background-color: #1066c3 !important;
+	border-color: #1066c3 !important;
+	box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+	-4px -4px 6px 0 rgba(116, 125, 136, .5), 
+inset -4px -4px 6px 0 rgba(255,255,255,.2),
+inset 4px 4px 6px 0 rgba(0, 0, 0, .4) !important;
+}
+
+.btn-secondary:hover,.btn-secondary:active{
+	background-color: #4e5459 !important;
+	border-color: #4e5459 !important;
+}
+.hightlightSecondary{
+	background-color: #4e5459 !important;
+	border-color: #4e5459 !important;
+	box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+	-4px -4px 6px 0 rgba(116, 125, 136, .5), 
+inset -4px -4px 6px 0 rgba(255,255,255,.2),
+inset 4px 4px 6px 0 rgba(0, 0, 0, .4) !important;
+}
+
+.btn-success:hover,.btn-success:active{
+	background-color: #278b3e !important;
+	border-color: #278b3e !important;
+}
+.highlightSuccess{
+	background-color: #278b3e !important;
+	border-color: #278b3e !important;
+	box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+	-4px -4px 6px 0 rgba(116, 125, 136, .5), 
+inset -4px -4px 6px 0 rgba(255,255,255,.2),
+inset 4px 4px 6px 0 rgba(0, 0, 0, .4) !important;
+}
+
+.btn-danger:hover,.btn-danger:active{
+	background-color: #be2e3c !important;
+	border-color: #be2e3c !important;
+}
+.highlightDanger{
+	background-color: #be2e3c !important;
+	border-color: #be2e3c !important;
+	box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+	-4px -4px 6px 0 rgba(116, 125, 136, .5), 
+inset -4px -4px 6px 0 rgba(255,255,255,.2),
+inset 4px 4px 6px 0 rgba(0, 0, 0, .4) !important;
+}
+
+.btn-warning:hover,.btn-warning:active{
+	background-color: #e8a402 !important;
+  border-color: #db9b02 !important;
+}
+.highlightWarning{
+	background-color: #eaa609 !important;
+  border-color: #eaa609 !important;
+	box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+	-4px -4px 6px 0 rgba(116, 125, 136, .5), 
+inset -4px -4px 6px 0 rgba(255,255,255,.2),
+inset 4px 4px 6px 0 rgba(0, 0, 0, .4) !important;
+}
+
+.btn-info:hover,.btn-info:active{
+	background-color: #1591a3 !important;
+  border-color: #1591a3 !important;
+}
+.highlightInfo{
+	background-color: #1591a3 !important;
+  border-color: #1591a3 !important;
+	box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+	-4px -4px 6px 0 rgba(116, 125, 136, .5), 
+inset -4px -4px 6px 0 rgba(255,255,255,.2),
+inset 4px 4px 6px 0 rgba(0, 0, 0, .4) !important;
+}
+
+.btn-dark:hover,.btn-dark:active{
+	background-color: #33383d !important;
+	border-color: #33383d !important;
+}
+.highlightDark{
+	background-color: #33383d !important;
+	border-color: #33383d !important;
+	box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+	-4px -4px 6px 0 rgba(116, 125, 136, .5), 
+inset -4px -4px 6px 0 rgba(255,255,255,.2),
+inset 4px 4px 6px 0 rgba(0, 0, 0, .4) !important;
+}
+
+.statistics .highlight{
+	// box-shadow: -3px 3px #a2a3a3, -2px 2px #a3a3a3, -1px 1px #c3c3c3 !important;
+	box-shadow:  4px 4px 6px 0 rgba(255,255,255,.5),
+	-4px -4px 6px 0 rgba(116, 125, 136, .5), 
+inset -4px -4px 6px 0 rgba(255,255,255,.2),
+inset 4px 4px 6px 0 rgba(0, 0, 0, .4) !important;
+}

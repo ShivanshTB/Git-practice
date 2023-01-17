@@ -1,0 +1,40 @@
+<div id="copy-campaign">
+	<div class="modal-header">
+		<span class="modal-title">
+			<span>Copy Campaign</span>
+		</span>
+	
+		<button type="button" class="close" id="hide-modal-top" (click)="activeModal.hide();">
+			<span>&times;</span>
+		</button>
+	</div>
+
+	<div class="modal-body">
+		<form lass="highlight-invalid" [formGroup]="copyCampaignForm" #copyCampaignNgForm="ngForm" novalidate>
+			<div class="jumbotron p-4">
+				<h1 class="text-break">{{campaign?.CampaignTitle}}</h1>
+				<p class="lead text-break">{{campaign?.CampaignDescription}}</p>
+				<hr class="my-4">
+				<p class="font-14">Select options to copy - </p>
+				<div class="row ml-2 custom-control custom-checkbox">
+					<input type="checkbox" id="copy-SMS-template" class="custom-control-input" formControlName="smsTemplate">
+					<label class="custom-control-label" for="copy-SMS-template">Copy SMS Template</label>	
+				</div>
+				<div class="row ml-2 custom-control custom-checkbox">
+					<input type="checkbox" id="copy-Email-template" class="custom-control-input" formControlName="emailTemplate">
+					<label class="custom-control-label" for="copy-Email-template">Copy Email Template</label>	
+				</div>
+				<div class="row ml-2 custom-control custom-checkbox" *ngIf="this.campaign?.CreatedBy==this.loggedInUser.userId">
+					<input type="checkbox" id="copy-candidates" class="custom-control-input" formControlName="candidates">
+					<label class="custom-control-label" for="copy-candidates">Copy Candidates</label>	
+				</div>
+			</div>
+			<div class="text-center">
+				<div class="disabled-btn-tooltip" [tooltip]="getTooltIipMessageForNextBtn()" placement="top" triggers="pointerenter:pointerout" class="disabled-btn-tooltip">
+					<button type="button" id="copyCampaignBtn" class="btn shadow-sm btn-outline-primary" [disabled]="!(this.copyCampaignForm.value.smsTemplate || this.copyCampaignForm.value.emailTemplate || this.copyCampaignForm.value.candidates)" (click)="copyCampaign()">Next</button>
+				</div>
+			</div>
+		</form>
+	</div>	
+</div>
+	

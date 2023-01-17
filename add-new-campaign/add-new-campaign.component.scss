@@ -1,0 +1,13 @@
+:host::ng-deep{
+	aw-wizard-navigation-bar{
+		display: none;
+	}
+}
+.template-configuration-layout {
+	border: 1px solid darkgrey; 
+	padding: 10px;
+	background-color: antiquewhite;
+}
+.modal-body{
+	max-height: 85vh;
+}
